@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AXIOM — Private Acquisition · timebyaxiom.com</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Rajdhani:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { background:#000; color:#e8edf5; font-family:'Rajdhani',sans-serif; overflow-x:hidden; }
+
+  .starfield {
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:
+      radial-gradient(1px 1px at 10% 15%, rgba(200,146,10,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 25% 40%, rgba(255,255,255,0.25) 0%, transparent 100%),
+      radial-gradient(1px 1px at 40% 8%,  rgba(200,146,10,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 25%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 75% 55%, rgba(200,146,10,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 85% 12%, rgba(255,255,255,0.35) 0%, transparent 100%),
+      radial-gradient(1px 1px at 15% 80%, rgba(255,255,255,0.18) 0%, transparent 100%),
+      radial-gradient(1px 1px at 50% 90%, rgba(200,146,10,0.15) 0%, transparent 100%);
+  }
+
+  nav {
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:22px 40px;
+    background:rgba(0,0,0,0.88);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid rgba(200,146,10,0.07);
+  }
+
+  .nav-brand {
+    font-family:'Cinzel',serif;
+    font-size:13px; font-weight:900;
+    letter-spacing:0.55em;
+    color:rgba(200,146,10,0.7);
+    text-decoration:none;
+    padding-right:0.55em;
+  }
+
+  .nav-links { display:flex; gap:28px; list-style:none; }
+
+  .nav-links a {
+    font-family:'Cinzel',serif;
+    font-size:9px; letter-spacing:0.4em;
+    color:rgba(138,155,181,0.4);
+    text-decoration:none; text-transform:uppercase;
+    transition:color 0.3s;
+  }
+
+  .nav-links a:hover,
+  .nav-links a.active { color:rgba(200,146,10,0.75); }
+
+  /* HERO — FULL SCREEN STATEMENT */
+  .hero {
+    position:relative; z-index:10;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:120px 30px 80px;
+    border-bottom:1px solid rgba(200,146,10,0.07);
+  }
+
+  .hero-eye {
+    width:52px; height:30px;
+    margin:0 auto 44px;
+    opacity:0;
+    animation:fade-up 1.2s ease 0.3s both;
+  }
+
+  .hero-label {
+    font-family:'Rajdhani',sans-serif;
+    font-size:9px; letter-spacing:0.7em;
+    color:rgba(200,146,10,0.35);
+    text-transform:uppercase;
+    margin-bottom:32px;
+    opacity:0;
+    animation:fade-up 1s ease 0.5s both;
+  }
+
+  .hero-statement {
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    font-size:clamp(22px,4vw,38px);
+    font-weight:300;
+    color:rgba(232,237,245,0.82);
+    letter-spacing:0.06em;
+    line-height:1.85;
+    max-width:600px;
+    opacity:0;
+    animation:fade-up 1.2s ease 0.8s both;
+  }
+
+  .hero-statement em { color:rgba(200,146,10,0.85); font-style:italic; }
+
+  .hero-sub {
+    font-family:'Rajdhani',sans-serif;
+    font-size:10px; letter-spacing:0.55em;
+    color:rgba(138,155,181,0.3);
+    text-transform:uppercase;
+    margin-top:36px;
+    line-height:2.2;
+    opacity:0;
+    animation:fade-up 1s ease 1.2s both;
+  }
+
+  /* THE CONTACT BLOCK */
+  .contact-block {
+    position:relative; z-index:10;
+    max-width:600px;
+    margin:0 auto;
+    padding:100px 30px;
+    text-align:center;
+    opacity:0; transform:translateY(24px);
+    transition:opacity 1s ease, transform 1s ease;
+  }
+
+  .contact-block.visible { opacity:1; transform:translateY(0); }
+
+  .contact-label {
+    font-family:'Rajdhani',sans-serif;
+    font-size:9px; letter-spacing:0.65em;
+    color:rgba(200,146,10,0.28);
+    text-transform:uppercase;
+    margin-bottom:48px;
+  }
+
+  .contact-email {
+    font-family:'Cinzel',serif;
+    font-size:clamp(14px,2.5vw,20px);
+    font-weight:400;
+    letter-spacing:0.25em;
+    color:rgba(200,146,10,0.7);
+    text-decoration:none;
+    border-bottom:1px solid rgba(200,146,10,0.2);
+    padding-bottom:8px;
+    transition:color 0.3s, border-color 0.3s;
+    display:inline-block;
+  }
+
+  .contact-email:hover {
+    color:rgba(200,146,10,1);
+    border-color:rgba(200,146,10,0.6);
+  }
+
+  .contact-note {
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    font-size:14px;
+    color:rgba(138,155,181,0.35);
+    letter-spacing:0.1em;
+    line-height:1.9;
+    margin-top:36px;
+  }
+
+  /* WHAT TO INCLUDE */
+  .include {
+    position:relative; z-index:10;
+    max-width:620px;
+    margin:0 auto;
+    padding:0 30px 80px;
+    opacity:0; transform:translateY(20px);
+    transition:opacity 1s ease 0.1s, transform 1s ease 0.1s;
+  }
+
+  .include.visible { opacity:1; transform:translateY(0); }
+
+  .include-label {
+    font-family:'Rajdhani',sans-serif;
+    font-size:9px; letter-spacing:0.65em;
+    color:rgba(200,146,10,0.28);
+    text-transform:uppercase;
+    text-align:center;
+    margin-bottom:44px;
+  }
+
+  .include-row {
+    display:flex;
+    gap:24px;
+    align-items:flex-start;
+    padding:28px 0;
+    border-bottom:1px solid rgba(138,155,181,0.06);
+  }
+
+  .include-row:first-of-type { border-top:1px solid rgba(138,155,181,0.06); }
+
+  .include-num {
+    font-family:'Cinzel',serif;
+    font-size:11px; letter-spacing:0.3em;
+    color:rgba(200,146,10,0.35);
+    flex-shrink:0;
+    padding-top:2px;
+    width:32px;
+  }
+
+  .include-text {
+    font-family:'Cormorant Garamond',serif;
+    font-size:15px;
+    font-weight:300;
+    line-height:1.8;
+    color:rgba(232,237,245,0.6);
+    letter-spacing:0.03em;
+  }
+
+  .include-text em { color:rgba(200,146,10,0.7); font-style:italic; }
+
+  /* PROMISE BLOCK */
+  .promise {
+    position:relative; z-index:10;
+    text-align:center;
+    padding:80px 30px;
+    border-top:1px solid rgba(200,146,10,0.07);
+    border-bottom:1px solid rgba(200,146,10,0.07);
+    max-width:580px;
+    margin:0 auto;
+    opacity:0; transform:translateY(20px);
+    transition:opacity 1s ease 0.1s, transform 1s ease 0.1s;
+  }
+
+  .promise.visible { opacity:1; transform:translateY(0); }
+
+  .promise p {
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    font-size:clamp(16px,2.5vw,20px);
+    font-weight:300;
+    line-height:2.1;
+    color:rgba(232,237,245,0.6);
+    letter-spacing:0.04em;
+  }
+
+  .promise p em { color:rgba(200,146,10,0.8); }
+
+  /* CLOSING */
+  .closing {
+    position:relative; z-index:10;
+    text-align:center;
+    padding:60px 30px 90px;
+  }
+
+  .closing p {
+    font-family:'Cinzel',serif;
+    font-size:clamp(11px,1.5vw,13px);
+    letter-spacing:0.4em;
+    color:rgba(200,146,10,0.28);
+    line-height:2.8;
+  }
+
+  .closing a {
+    color:rgba(200,146,10,0.5);
+    text-decoration:none;
+    letter-spacing:0.4em;
+    transition:color 0.3s;
+  }
+
+  .closing a:hover { color:rgba(200,146,10,0.9); }
+
+  footer {
+    position:relative; z-index:10;
+    text-align:center;
+    padding:40px 20px;
+    border-top:1px solid rgba(138,155,181,0.04);
+  }
+
+  .footer-brand {
+    font-family:'Cinzel',serif;
+    font-size:15px; font-weight:900;
+    letter-spacing:0.6em;
+    color:rgba(200,146,10,0.18);
+    padding-right:0.6em;
+  }
+
+  footer p {
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    font-size:12px;
+    color:rgba(138,155,181,0.16);
+    letter-spacing:0.2em;
+    line-height:2.2;
+    margin-top:9px;
+  }
+
+  @keyframes fade-up { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes pulse-node { 0%,100%{opacity:0.35} 50%{opacity:1} }
+  @keyframes eye-breathe { 0%,100%{opacity:0.6} 50%{opacity:1} }
+
+  .node-pulse   { animation:pulse-node 2.4s ease-in-out infinite; }
+  .node-pulse-2 { animation:pulse-node 2.4s ease-in-out infinite 0.8s; }
+  .eye-breathe  { animation:eye-breathe 4s ease-in-out infinite; }
+
+  @media (max-width:640px) {
+    nav { padding:18px 20px; }
+    .nav-links { gap:14px; }
+    .nav-links a { font-size:8px; letter-spacing:0.25em; }
+  }
+
+  @media (prefers-reduced-motion:reduce) {
+    .contact-block, .include, .promise { opacity:1; transform:none; transition:none; }
+    * { animation-duration:0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="starfield"></div>
+
+<nav>
+  <a href="/" class="nav-brand">AXIOM</a>
+  <ul class="nav-links">
+    <a href="/manifesto">Manifesto</a>
+    <a href="/genesis-collection">Collection</a>
+    <a href="/caseback">Caseback</a>
+    <a href="/editions">Editions</a>
+    <a href="/acquire" class="active">Acquire</a>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+
+  <div class="hero-eye">
+    <svg viewBox="0 0 52 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="26" cy="15" rx="25" ry="14" stroke="url(#eyeA)" stroke-width="0.9"/>
+      <circle cx="26" cy="15" r="6" fill="none" stroke="rgba(200,146,10,0.65)" stroke-width="0.7"/>
+      <circle cx="26" cy="15" r="2.5" fill="rgba(200,146,10,0.9)" class="eye-breathe"/>
+      <line x1="26" y1="15" x2="4"  y2="15" stroke="rgba(200,146,10,0.3)" stroke-width="0.5"/>
+      <line x1="26" y1="15" x2="48" y2="15" stroke="rgba(200,146,10,0.3)" stroke-width="0.5"/>
+      <circle cx="6"  cy="15" r="1.4" fill="rgba(200,146,10,0.7)" class="node-pulse"/>
+      <circle cx="46" cy="15" r="1.4" fill="rgba(240,192,64,0.7)" class="node-pulse-2"/>
+      <defs>
+        <linearGradient id="eyeA" x1="0" y1="0" x2="52" y2="30">
+          <stop offset="0%"   stop-color="#c8920a"/>
+          <stop offset="100%" stop-color="#f0c040"/>
+        </linearGradient>
+      </defs>
+    </svg>
+  </div>
+
+  <div class="hero-label">Private Acquisition · Genesis Collection I</div>
+
+  <p class="hero-statement">
+    If you are reading this,<br>
+    you may already know<br>
+    if this <em>belongs to you.</em>
+  </p>
+
+  <div class="hero-sub">
+    15 pieces · No shopping cart · No public sale<br>
+    Each chapter placed privately
+  </div>
+
+</section>
+
+<!-- CONTACT -->
+<div class="contact-block" data-scroll>
+  <div class="contact-label">One Point Of Contact · Nothing Else</div>
+  <a href="mailto:acquire@timebyaxiom.com" class="contact-email">acquire@timebyaxiom.com</a>
+  <p class="contact-note">
+    No form. No representative. No retail.<br>
+    One email. One conversation.<br>
+    Between you and AXIOM.
+  </p>
+</div>
+
+<!-- WHAT TO INCLUDE -->
+<div class="include" data-scroll>
+  <div class="include-label">When You Write · Include These</div>
+
+  <div class="include-row">
+    <div class="include-num">I</div>
+    <div class="include-text">Which chapter you are drawn to — <em>The Kept, The Flood, or The Word</em> — and why. Not required, but the ones who know, know immediately.</div>
+  </div>
+
+  <div class="include-row">
+    <div class="include-num">II</div>
+    <div class="include-text">Your private inscription request. <em>A scripture. A date. A word between you and God.</em> This goes on the caseback and nowhere else.</div>
+  </div>
+
+  <div class="include-row">
+    <div class="include-num">III</div>
+    <div class="include-text">Nothing else is required. <em>The conversation will find its own shape.</em> If this is yours, you will know it in the first exchange.</div>
+  </div>
+
+</div>
+
+<!-- PROMISE -->
+<div class="promise" data-scroll>
+  <p>
+    Each chapter is placed once.<br>
+    Each piece ships with its certificate of origin,<br>
+    its private scripture document,<br>
+    and the <em>knowledge of what it cost</em><br>
+    to build something true<br>
+    out of what was left.
+  </p>
+</div>
+
+<!-- CLOSING NAV -->
+<div class="closing">
+  <p>
+    <a href="/editions">← Edition Architecture</a><br>
+    <a href="/manifesto">The Manifesto</a><br>
+    <a href="/genesis-collection">Enter the Collection</a>
+  </p>
+</div>
+
+<footer>
+  <div class="footer-brand">AXIOM</div>
+  <p>timebyaxiom.com · Genesis Collection I · MMXXVI</p>
+  <p>The Kept · The Flood · The Word</p>
+  <p style="margin-top:8px; font-size:11px; color:rgba(138,155,181,0.12);">A self-evident truth that needs no proof.</p>
+</footer>
+
+<script>
+  (function() {
+    var els = document.querySelectorAll('[data-scroll]');
+    if (!els.length) return;
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+      });
+    }, { threshold:0.1, rootMargin:'0px 0px -50px 0px' });
+    els.forEach(function(el) { io.observe(el); });
+  })();
+</script>
+
+</body>
+</html>
