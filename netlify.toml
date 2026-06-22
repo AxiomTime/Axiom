@@ -22,3 +22,18 @@
   from = "/acquire"
   to = "/axiom-acquire.html"
   status = 200
+
+[[redirects]]
+  from = "/axiom-001-the-kept.html"
+  to = "/axiom-001-the-kept.html"
+  status = 200
+
+[[redirects]]
+  from = "/axiom-002-the-flood.html"
+  to = "/axiom-002-the-flood.html"
+  status = 200
+
+[[redirects]]
+  from = "/axiom-003-the-word.html"
+  to = "/axiom-003-the-word.html"
+  status = 200
