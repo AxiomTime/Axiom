@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AXIOM — Edition Architecture · timebyaxiom.com</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Rajdhani:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { background:#000; color:#e8edf5; font-family:'Rajdhani',sans-serif; overflow-x:hidden; }
+
+  .starfield {
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:
+      radial-gradient(1px 1px at 10% 15%, rgba(200,146,10,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 25% 40%, rgba(255,255,255,0.25) 0%, transparent 100%),
+      radial-gradient(1px 1px at 40% 8%,  rgba(200,146,10,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 25%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 75% 55%, rgba(200,146,10,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 85% 12%, rgba(255,255,255,0.35) 0%, transparent 100%),
+      radial-gradient(1px 1px at 15% 80%, rgba(255,255,255,0.18) 0%, transparent 100%),
+      radial-gradient(1px 1px at 50% 90%, rgba(200,146,10,0.15) 0%, transparent 100%);
+  }
+
+  nav {
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:22px 40px;
+    background:rgba(0,0,0,0.88);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid rgba(200,146,10,0.07);
+  }
+
+  .nav-brand {
+    font-family:'Cinzel',serif;
+    font-size:13px; font-weight:900;
+    letter-spacing:0.55em;
+    color:rgba(200,146,10,0.7);
+    text-decoration:none;
+    padding-right:0.55em;
+  }
+
+  .nav-links { display:flex; gap:28px; list-style:none; }
+
+  .nav-links a {
+    font-family:'Cinzel',serif;
+    font-size:9px; letter-spacing:0.4em;
+    color:rgba(138,155,181,0.4);
+    text-decoration:none; text-transform:uppercase;
+    transition:color 0.3s;
+  }
+
+  .nav-links a:hover,
+  .nav-links a.active { color:rgba(200,146,10,0.75); }
+
+  /* HERO */
+  .hero {
+    position:relative; z-index:10;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:120px 30px 80px;
+    border-bottom:1px solid rgba(200,146,10,0.07);
+  }
+
+  .hero-label {
+    font-family:'Rajdhani',sans-serif;
+    font-size:9px; letter-spacing:0.7em;
+    color:rgba(200,146,10,0.35);
+    text-transform:uppercase;
+    margin-bottom:36px;
+    opacity:0;
+    animation:fade-up 1s ease 0.3s both;
+  }
+
+  .hero-number {
+    font-family:'Cinzel',serif;
+    font-size:clamp(100px,25vw,200px);
+    font-weight:900;
+    line-height:1;
+    background:linear-gradient(160deg, #3a2200 0%, #c8920a 35%, #f0c040 55%, #e8edf5 75%, #c8920a 100%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    opacity:0;
+    animation:fade-up 1.2s ease 0.5s both;
+  }
+
+  .hero-unit {
+    font-family:'Cinzel',serif;
+    font-size:clamp(13px,2vw,18px);
+    letter-spacing:0.6em;
+    color:rgba(200,146,10,0.45);
+    text-transform:uppercase;
+    margin-top:10px;
+    opacity:0;
+    animation:fade-up 1s ease 0.8s both;
+    padding-right:0.6em;
+  }
+
+  .hero-statement {
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    font-size:clamp(16px,2.5vw,22px);
+    color:rgba(232,237,245,0.55);
+    letter-spacing:0.08em;
+    margin-top:32px;
+    line-height:1.8;
+    max-width:480px;
+    opacity:0;
+    animation:fade-up 1s ease 1.1s both;
+  }
+
+  /* EDITION TABLE */
+  .edition-table {
+    position:relative; z-index:10;
+    max-width:700px;
+    margin:0 auto;
+    padding:100px 30px;
+    opacity:0; transform:translateY(24px);
+    transition:opacity 1s ease, transform 1s ease;
+  }
+
+  .edition-table.visible { opacity:1; transform:translateY(0); }
+
+  .edition-table-label {
+    font-family:'Rajdhani',sans-serif;
+    font-size:9px; letter-spacing:0.65em;
+    color:rgba(200,146,10,0.28);
+    text-transform:uppercase;
+    text-align:center;
+    margin-bottom:60px;
+  }
+
+  .edition-row {
+    display:grid;
+    grid-template-columns:1fr 80px 80px;
+    align-items:center;
+    padding:36px 0;
+    border-bottom:1px solid rgba(138,155,181,0.07);
+    gap:20px;
+  }
+
+  .edition-row:first-of-type { border-top:1px solid rgba(138,155,181,0.07); }
+
+  .edition-left { }
+
+  .edition-chapter {
+    font-family:'Rajdhani',sans-serif;
+    font-size:8px; letter-spacing:0.55em;
+    text-transform:uppercase;
+    margin-bottom:8px;
+  }
+
+  .edition-name {
+    font-family:'Cinzel',serif;
+    font-size:clamp(18px,3vw,26px);
+    font-weight:600;
+    letter-spacing:0.2em;
+    margin-bottom:8px;
+  }
+
+  .edition-sub {
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    font-size:13px;
+    color:rgba(138,155,181,0.4);
+    letter-spacing:0.1em;
+  }
+
+  .edition-count {
+    font-family:'Cinzel',serif;
+    font-size:clamp(28px,5vw,42px);
+    font-weight:900;
+    text-align:center;
+    line-height:1;
+  }
+
+  .edition-of {
+    font-family:'Rajdhani',sans-serif;
+    font-size:8px; letter-spacing:0.4em;
+    color:rgba(138,155,181,0.3);
+    text-transform:uppercase;
+    text-align:center;
+  }
+
+  .r001 .edition-chapter,
+  .r001 .edition-name,
+  .r001 .edition-count { color:rgba(200,146,10,0.8); }
+
+  .r002 .edition-chapter,
+  .r002 .edition-name,
+  .r002 .edition-count { color:rgba(26,143,255,0.8); }
+
+  .r003 .edition-chapter,
+  .r003 .edition-name,
+  .r003 .edition-count { color:rgba(245,230,200,0.75); }
+
+  /* TOTAL LINE */
+  .total-line {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:40px 0 0;
+    border-top:1px solid rgba(200,146,10,0.2);
+    margin-top:10px;
+  }
+
+  .total-label {
+    font-family:'Cinzel',serif;
+    font-size:10px; letter-spacing:0.5em;
+    color:rgba(200,146,10,0.4);
+    text-transform:uppercase;
+  }
+
+  .total-number {
+    font-family:'Cinzel',serif;
+    font-size:clamp(32px,6vw,52px);
+    font-weight:900;
+    background:linear-gradient(135deg, #c8920a 0%, #f0c040 50%, #c8920a 100%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    line-height:1;
+  }
+
+  .total-sub {
+    font-family:'Rajdhani',sans-serif;
+    font-size:8px; letter-spacing:0.45em;
+    color:rgba(200,146,10,0.3);
+    text-transform:uppercase;
+    text-align:right;
+    margin-top:6px;
+  }
+
+  /* SCARCITY STATEMENT */
+  .scarcity {
+    position:relative; z-index:10;
+    text-align:center;
+    padding:80px 30px;
+    border-top:1px solid rgba(200,146,10,0.07);
+    border-bottom:1px solid rgba(200,146,10,0.07);
+    max-width:620px;
+    margin:0 auto;
+    opacity:0; transform:translateY(20px);
+    transition:opacity 1s ease 0.1s, transform 1s ease 0.1s;
+  }
+
+  .scarcity.visible { opacity:1; transform:translateY(0); }
+
+  .scarcity p {
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    font-size:clamp(17px,2.5vw,22px);
+    font-weight:300;
+    line-height:2;
+    color:rgba(232,237,245,0.65);
+    letter-spacing:0.04em;
+  }
+
+  .scarcity p em { color:rgba(200,146,10,0.8); font-style:italic; }
+
+  /* BIBLICAL NUMBERS */
+  .numbers {
+    position:relative; z-index:10;
+    max-width:700px;
+    margin:0 auto;
+    padding:80px 30px;
+    opacity:0; transform:translateY(20px);
+    transition:opacity 1s ease 0.15s, transform 1s ease 0.15s;
+  }
+
+  .numbers.visible { opacity:1; transform:translateY(0); }
+
+  .numbers-label {
+    font-family:'Rajdhani',sans-serif;
+    font-size:9px; letter-spacing:0.65em;
+    color:rgba(200,146,10,0.28);
+    text-transform:uppercase;
+    text-align:center;
+    margin-bottom:52px;
+  }
+
+  .numbers-grid {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:1px;
+  }
+
+  .number-item {
+    padding:40px 24px;
+    border:1px solid rgba(138,155,181,0.06);
+    text-align:center;
+    background:rgba(5,6,10,0.9);
+  }
+
+  .number-digit {
+    font-family:'Cinzel',serif;
+    font-size:clamp(36px,6vw,56px);
+    font-weight:900;
+    color:rgba(200,146,10,0.7);
+    line-height:1;
+    margin-bottom:16px;
+  }
+
+  .number-meaning {
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    font-size:13px;
+    color:rgba(138,155,181,0.45);
+    line-height:1.7;
+    letter-spacing:0.04em;
+  }
+
+  .number-meaning strong {
+    display:block;
+    font-style:normal;
+    font-family:'Rajdhani',sans-serif;
+    font-size:8px;
+    letter-spacing:0.5em;
+    color:rgba(200,146,10,0.3);
+    text-transform:uppercase;
+    margin-bottom:8px;
+  }
+
+  /* CLOSING */
+  .closing {
+    position:relative; z-index:10;
+    text-align:center;
+    padding:60px 30px 90px;
+    border-top:1px solid rgba(138,155,181,0.05);
+  }
+
+  .closing p {
+    font-family:'Cinzel',serif;
+    font-size:clamp(11px,1.5vw,13px);
+    letter-spacing:0.4em;
+    color:rgba(200,146,10,0.28);
+    line-height:2.8;
+  }
+
+  .closing a {
+    color:rgba(200,146,10,0.5);
+    text-decoration:none;
+    letter-spacing:0.4em;
+    transition:color 0.3s;
+  }
+
+  .closing a:hover { color:rgba(200,146,10,0.9); }
+
+  footer {
+    position:relative; z-index:10;
+    text-align:center;
+    padding:40px 20px;
+    border-top:1px solid rgba(138,155,181,0.04);
+  }
+
+  .footer-brand {
+    font-family:'Cinzel',serif;
+    font-size:15px; font-weight:900;
+    letter-spacing:0.6em;
+    color:rgba(200,146,10,0.18);
+    padding-right:0.6em;
+  }
+
+  footer p {
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    font-size:12px;
+    color:rgba(138,155,181,0.16);
+    letter-spacing:0.2em;
+    line-height:2.2;
+    margin-top:9px;
+  }
+
+  @keyframes fade-up { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+
+  @media (max-width:640px) {
+    nav { padding:18px 20px; }
+    .nav-links { gap:14px; }
+    .nav-links a { font-size:8px; letter-spacing:0.25em; }
+    .edition-row { grid-template-columns:1fr 60px 60px; gap:12px; }
+    .numbers-grid { grid-template-columns:1fr; }
+    .number-item { padding:28px 20px; }
+  }
+
+  @media (prefers-reduced-motion:reduce) {
+    .edition-table, .scarcity, .numbers { opacity:1; transform:none; transition:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="starfield"></div>
+
+<nav>
+  <a href="/" class="nav-brand">AXIOM</a>
+  <ul class="nav-links">
+    <a href="/manifesto">Manifesto</a>
+    <a href="/genesis-collection">Collection</a>
+    <a href="/caseback">Caseback</a>
+    <a href="/editions" class="active">Editions</a>
+    <a href="/acquire">Acquire</a>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-label">Genesis Collection I · Edition Architecture</div>
+  <div class="hero-number">15</div>
+  <div class="hero-unit">Pieces · Total Existence</div>
+  <p class="hero-statement">Three chapters. One testimony. Never repeated.</p>
+</section>
+
+<div class="edition-table" data-scroll>
+  <div class="edition-table-label">Edition Breakdown · Genesis Collection I</div>
+
+  <div class="edition-row r001">
+    <div class="edition-left">
+      <div class="edition-chapter">No. 001 · Chapter One</div>
+      <div class="edition-name">The Kept</div>
+      <div class="edition-sub">Carbon Black · Solar Gold</div>
+    </div>
+    <div>
+      <div class="edition-count">7</div>
+      <div class="edition-of">of 7</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-family:'Cinzel',serif; font-size:14px; color:rgba(200,146,10,0.6); letter-spacing:0.1em;">$95,000</div>
+      <div style="font-family:'Rajdhani',sans-serif; font-size:8px; letter-spacing:0.4em; color:rgba(138,155,181,0.28); text-transform:uppercase; margin-top:4px;">per piece</div>
+    </div>
+  </div>
+
+  <div class="edition-row r002">
+    <div class="edition-left">
+      <div class="edition-chapter">No. 002 · Chapter Two</div>
+      <div class="edition-name">The Flood</div>
+      <div class="edition-sub">Brushed Titanium · Arc Blue</div>
+    </div>
+    <div>
+      <div class="edition-count">5</div>
+      <div class="edition-of">of 5</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-family:'Cinzel',serif; font-size:14px; color:rgba(26,143,255,0.6); letter-spacing:0.1em;">$145,000</div>
+      <div style="font-family:'Rajdhani',sans-serif; font-size:8px; letter-spacing:0.4em; color:rgba(138,155,181,0.28); text-transform:uppercase; margin-top:4px;">per piece</div>
+    </div>
+  </div>
+
+  <div class="edition-row r003">
+    <div class="edition-left">
+      <div class="edition-chapter">No. 003 · Chapter Three</div>
+      <div class="edition-name">The Word</div>
+      <div class="edition-sub">Blackened Bronze · Dawn Ivory</div>
+    </div>
+    <div>
+      <div class="edition-count">3</div>
+      <div class="edition-of">of 3</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-family:'Cinzel',serif; font-size:14px; color:rgba(245,230,200,0.6); letter-spacing:0.1em;">$310,000</div>
+      <div style="font-family:'Rajdhani',sans-serif; font-size:8px; letter-spacing:0.4em; color:rgba(138,155,181,0.28); text-transform:uppercase; margin-top:4px;">per piece</div>
+    </div>
+  </div>
+
+  <div class="total-line">
+    <div>
+      <div class="total-label">Genesis Collection I · Total</div>
+      <div class="total-sub">Never repeated · Never exceeded</div>
+    </div>
+    <div style="text-align:right">
+      <div class="total-number">15</div>
+      <div class="total-sub">Pieces in existence</div>
+    </div>
+  </div>
+</div>
+
+<div class="scarcity" data-scroll>
+  <p>
+    There is no waitlist.<br>
+    There is no second run.<br>
+    When the <em>fifteenth piece</em> is placed,<br>
+    Genesis Collection I is closed.<br>
+    Forever.
+  </p>
+</div>
+
+<div class="numbers" data-scroll>
+  <div class="numbers-label">The Biblical Architecture · Why These Numbers</div>
+  <div class="numbers-grid">
+
+    <div class="number-item">
+      <div class="number-digit">7</div>
+      <div class="number-meaning">
+        <strong>The Kept · Completion</strong>
+        The number of days. The covenant number. God rested on the seventh. The foundational chapter — the widest net cast before the world knew His name.
+      </div>
+    </div>
+
+    <div class="number-item">
+      <div class="number-digit">5</div>
+      <div class="number-meaning">
+        <strong>The Flood · Grace</strong>
+        Five wounds. Five books of Moses. The transition piece — the middle chapter where everything breaks open and creation pours in.
+      </div>
+    </div>
+
+    <div class="number-item">
+      <div class="number-digit">3</div>
+      <div class="number-meaning">
+        <strong>The Word · The Trinity</strong>
+        Three pieces on earth. Period. Whoever holds No. 003 of 003 holds the final word of the only collection that ever existed.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="closing">
+  <p>
+    <a href="/caseback">← The Caseback</a><br>
+    <a href="/acquire">Private Acquisition →</a><br>
+    <a href="/genesis-collection">Enter the Collection</a>
+  </p>
+</div>
+
+<footer>
+  <div class="footer-brand">AXIOM</div>
+  <p>timebyaxiom.com · Genesis Collection I · MMXXVI</p>
+  <p>The Kept · The Flood · The Word</p>
+  <p style="margin-top:8px; font-size:11px; color:rgba(138,155,181,0.12);">15 pieces · Total existence</p>
+</footer>
+
+<script>
+  (function() {
+    var els = document.querySelectorAll('[data-scroll]');
+    if (!els.length) return;
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+      });
+    }, { threshold:0.1, rootMargin:'0px 0px -50px 0px' });
+    els.forEach(function(el) { io.observe(el); });
+  })();
+</script>
+
+</body>
+</html>
