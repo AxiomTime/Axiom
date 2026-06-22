@@ -1,4 +1,24 @@
 [[redirects]]
-  from = "/*"
-  to = "/:splat.html"
+  from = "/manifesto"
+  to = "/axiom-manifesto.html"
+  status = 200
+
+[[redirects]]
+  from = "/genesis-collection"
+  to = "/axiom-genesis-collection.html"
+  status = 200
+
+[[redirects]]
+  from = "/caseback"
+  to = "/axiom-caseback.html"
+  status = 200
+
+[[redirects]]
+  from = "/editions"
+  to = "/axiom-editions.html"
+  status = 200
+
+[[redirects]]
+  from = "/acquire"
+  to = "/axiom-acquire.html"
   status = 200
