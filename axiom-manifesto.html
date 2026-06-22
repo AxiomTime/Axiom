@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AXIOM — The Manifesto · timebyaxiom.com</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Rajdhani:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #c8920a;
+    --gold-light: #f0c040;
+    --gold-dim: rgba(200,146,10,0.5);
+    --steel: #8a9bb5;
+    --void: #000000;
+    --white: #e8edf5;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  html { scroll-behavior:smooth; }
+
+  body {
+    background:var(--void);
+    color:var(--white);
+    font-family:'Rajdhani',sans-serif;
+    overflow-x:hidden;
+    cursor:default;
+  }
+
+  /* ── STARFIELD ── */
+  .starfield {
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:
+      radial-gradient(1px 1px at 8% 12%, rgba(200,146,10,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 22% 38%, rgba(255,255,255,0.25) 0%, transparent 100%),
+      radial-gradient(1px 1px at 38% 7%,  rgba(200,146,10,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 55% 22%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 72% 52%, rgba(200,146,10,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 83% 10%, rgba(255,255,255,0.35) 0%, transparent 100%),
+      radial-gradient(1px 1px at 14% 78%, rgba(255,255,255,0.18) 0%, transparent 100%),
+      radial-gradient(1px 1px at 48% 88%, rgba(200,146,10,0.18) 0%, transparent 100%),
+      radial-gradient(1px 1px at 91% 65%, rgba(255,255,255,0.22) 0%, transparent 100%),
+      radial-gradient(1px 1px at 6%  55%, rgba(200,146,10,0.15) 0%, transparent 100%),
+      radial-gradient(1px 1px at 62% 94%, rgba(255,255,255,0.15) 0%, transparent 100%),
+      radial-gradient(1px 1px at 31% 60%, rgba(200,146,10,0.12) 0%, transparent 100%);
+  }
+
+  /* ── NAV ── */
+  nav {
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:22px 40px;
+    background:rgba(0,0,0,0.85);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(200,146,10,0.08);
+  }
+
+  .nav-brand {
+    font-family:'Cinzel',serif;
+    font-size:13px;
+    font-weight:900;
+    letter-spacing:0.55em;
+    color:rgba(200,146,10,0.7);
+    text-decoration:none;
+    padding-right:0.55em;
+  }
+
+  .nav-links {
+    display:flex; gap:28px; list-style:none;
+  }
+
+  .nav-links a {
+    font-family:'Cinzel',serif;
+    font-size:9px;
+    letter-spacing:0.4em;
+    color:rgba(138,155,181,0.4);
+    text-decoration:none;
+    text-transform:uppercase;
+    transition:color 0.3s;
+  }
+
+  .nav-links a:hover,
+  .nav-links a.active { color:rgba(200,146,10,0.75); }
+
+  /* ── OPENING — FULL VIEWPORT ── */
+  .opening {
+    position:relative; z-index:10;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:120px 30px 80px;
+    border-bottom:1px solid rgba(200,146,10,0.07);
+  }
+
+  .opening-eyemark {
+    width:52px; height:30px;
+    margin:0 auto 36px;
+    opacity:0;
+    animation:fade-up 1.2s ease 0.3s both;
+  }
+
+  .opening-label {
+    font-family:'Rajdhani',sans-serif;
+    font-size:9px;
+    letter-spacing:0.75em;
+    color:rgba(200,146,10,0.4);
+    text-transform:uppercase;
+    margin-bottom:28px;
+    opacity:0;
+    animation:fade-up 1s ease 0.6s both;
+  }
+
+  .opening-word {
+    font-family:'Cinzel',serif;
+    font-size:clamp(48px,10vw,110px);
+    font-weight:900;
+    letter-spacing:0.4em;
+    line-height:1;
+    background:linear-gradient(160deg, #5a3d02 0%, #c8920a 28%, #f0c040 52%, #e8edf5 72%, #c8920a 100%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    padding-right:0.4em;
+    opacity:0;
+    animation:fade-up 1.2s ease 0.9s both;
+  }
+
+  .opening-sub {
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    font-size:clamp(15px,2vw,19px);
+    color:rgba(138,155,181,0.45);
+    letter-spacing:0.3em;
+    margin-top:18px;
+    opacity:0;
+    animation:fade-up 1s ease 1.2s both;
+  }
+
+  .opening-scroll {
+    position:absolute;
+    bottom:38px;
+    left:50%;
+    transform:translateX(-50%);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+    opacity:0;
+    animation:fade-up 1s ease 2s both;
+  }
+
+  .opening-scroll span {
+    font-family:'Rajdhani',sans-serif;
+    font-size:8px;
+    letter-spacing:0.55em;
+    color:rgba(200,146,10,0.3);
+    text-transform:uppercase;
+  }
+
+  .scroll-line {
+    width:1px; height:44px;
+    background:linear-gradient(to bottom, rgba(200,146,10,0.4), transparent);
+    animation:scroll-pulse 2.2s ease-in-out infinite;
+  }
+
+  /* ── TESTIMONY SECTIONS ── */
+  .testimony {
+    position:relative; z-index:10;
+    max-width:680px;
+    margin:0 auto;
+    padding:0 30px;
+  }
+
+  /* Each chapter of the testimony */
+  .verse {
+    padding:90px 0;
+    border-bottom:1px solid rgba(138,155,181,0.05);
+    opacity:0;
+    transform:translateY(30px);
+    transition:opacity 0.9s ease, transform 0.9s ease;
+  }
+
+  .verse.visible {
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  .verse-number {
+    font-family:'Cinzel',serif;
+    font-size:8px;
+    letter-spacing:0.65em;
+    color:rgba(200,146,10,0.28);
+    text-transform:uppercase;
+    margin-bottom:32px;
+    display:flex;
+    align-items:center;
+    gap:16px;
+  }
+
+  .verse-number::after {
+    content:'';
+    flex:1;
+    height:1px;
+    background:rgba(200,146,10,0.1);
+  }
+
+  .verse-body {
+    font-family:'Cormorant Garamond',serif;
+    font-weight:300;
+    font-size:clamp(18px,2.5vw,24px);
+    line-height:2.05;
+    color:rgba(232,237,245,0.72);
+    letter-spacing:0.03em;
+  }
+
+  .verse-body em {
+    font-style:italic;
+    color:rgba(200,146,10,0.85);
+  }
+
+  .verse-body strong {
+    font-style:normal;
+    font-weight:400;
+    color:rgba(232,237,245,0.95);
+  }
+
+  /* ── GOLD DIVIDER STATEMENT ── */
+  .gold-statement {
+    position:relative; z-index:10;
+    text-align:center;
+    padding:80px 30px;
+    border-top:1px solid rgba(200,146,10,0.08);
+    border-bottom:1px solid rgba(200,146,10,0.08);
+    opacity:0;
+    transform:translateY(20px);
+    transition:opacity 1s ease, transform 1s ease;
+  }
+
+  .gold-statement.visible {
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  .gold-statement p {
+    font-family:'Cinzel',serif;
+    font-size:clamp(14px,2vw,18px);
+    font-weight:400;
+    letter-spacing:0.22em;
+    color:rgba(200,146,10,0.7);
+    line-height:2;
+    max-width:560px;
+    margin:0 auto;
+  }
+
+  /* ── SCRIPTURE PILLARS ── */
+  .pillars {
+    position:relative; z-index:10;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:1px;
+    max-width:900px;
+    margin:0 auto;
+    padding:0 20px;
+    opacity:0;
+    transform:translateY(20px);
+    transition:opacity 1s ease 0.2s, transform 1s ease 0.2s;
+  }
+
+  .pillars.visible {
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  .pillar {
+    padding:48px 30px;
+    border:1px solid rgba(138,155,181,0.06);
+    text-align:center;
+  }
+
+  .pillar-chapter {
+    font-family:'Rajdhani',sans-serif;
+    font-size:8px;
+    letter-spacing:0.6em;
+    text-transform:uppercase;
+    margin-bottom:20px;
+  }
+
+  .pillar-ref {
+    font-family:'Cinzel',serif;
+    font-size:10px;
+    letter-spacing:0.3em;
+    margin-bottom:14px;
+  }
+
+  .pillar-text {
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    font-size:13px;
+    line-height:1.85;
+    color:rgba(232,237,245,0.55);
+  }
+
+  .pillar-name {
+    font-family:'Cinzel',serif;
+    font-size:13px;
+    font-weight:600;
+    letter-spacing:0.2em;
+    margin-top:22px;
+  }
+
+  .p001 .pillar-chapter,
+  .p001 .pillar-ref,
+  .p001 .pillar-name { color:rgba(200,146,10,0.65); }
+
+  .p002 .pillar-chapter,
+  .p002 .pillar-ref,
+  .p002 .pillar-name { color:rgba(26,143,255,0.65); }
+
+  .p003 .pillar-chapter,
+  .p003 .pillar-ref,
+  .p003 .pillar-name { color:rgba(245,230,200,0.6); }
+
+  /* ── THE AXIOM STATEMENT ── */
+  .axiom-statement {
+    position:relative; z-index:10;
+    text-align:center;
+    padding:100px 30px 90px;
+    max-width:700px;
+    margin:0 auto;
+    opacity:0;
+    transform:translateY(20px);
+    transition:opacity 1.1s ease, transform 1.1s ease;
+  }
+
+  .axiom-statement.visible {
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  .axiom-statement .eyemark-large {
+    width:72px; height:44px;
+    margin:0 auto 48px;
+  }
+
+  .axiom-statement .definition {
+    font-family:'Rajdhani',sans-serif;
+    font-size:9px;
+    letter-spacing:0.65em;
+    color:rgba(200,146,10,0.3);
+    text-transform:uppercase;
+    margin-bottom:28px;
+  }
+
+  .axiom-statement blockquote {
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    font-size:clamp(20px,3vw,28px);
+    font-weight:300;
+    line-height:1.85;
+    color:rgba(232,237,245,0.78);
+    letter-spacing:0.04em;
+    border:none;
+    padding:0;
+  }
+
+  .axiom-statement .attribution {
+    font-family:'Rajdhani',sans-serif;
+    font-size:9px;
+    letter-spacing:0.55em;
+    color:rgba(200,146,10,0.35);
+    text-transform:uppercase;
+    margin-top:32px;
+  }
+
+  /* ── CLOSING GOLD LINE ── */
+  .closing {
+    position:relative; z-index:10;
+    text-align:center;
+    padding:60px 30px 100px;
+    border-top:1px solid rgba(138,155,181,0.05);
+  }
+
+  .closing-line {
+    font-family:'Cinzel',serif;
+    font-size:clamp(11px,1.5vw,14px);
+    letter-spacing:0.45em;
+    color:rgba(200,146,10,0.3);
+    line-height:2.5;
+  }
+
+  .closing-line a {
+    color:rgba(200,146,10,0.55);
+    text-decoration:none;
+    transition:color 0.3s;
+    letter-spacing:0.45em;
+  }
+
+  .closing-line a:hover { color:rgba(200,146,10,0.9); }
+
+  /* ── FOOTER ── */
+  footer {
+    position:relative; z-index:10;
+    text-align:center;
+    padding:44px 20px;
+    border-top:1px solid rgba(138,155,181,0.04);
+  }
+
+  .footer-brand {
+    font-family:'Cinzel',serif;
+    font-size:16px;
+    font-weight:900;
+    letter-spacing:0.6em;
+    color:rgba(200,146,10,0.2);
+    padding-right:0.6em;
+  }
+
+  footer p {
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    font-size:12px;
+    color:rgba(138,155,181,0.18);
+    letter-spacing:0.2em;
+    line-height:2.2;
+    margin-top:10px;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fade-up {
+    from { opacity:0; transform:translateY(22px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  @keyframes scroll-pulse {
+    0%,100% { opacity:0.3; transform:scaleY(1); }
+    50%     { opacity:0.8; transform:scaleY(1.15); }
+  }
+
+  @keyframes pulse-node {
+    0%,100% { opacity:0.35; }
+    50%     { opacity:1; }
+  }
+
+  @keyframes eye-breathe {
+    0%,100% { opacity:0.6; }
+    50%     { opacity:1; }
+  }
+
+  .node-pulse   { animation:pulse-node 2.4s ease-in-out infinite; }
+  .node-pulse-2 { animation:pulse-node 2.4s ease-in-out infinite 0.6s; }
+  .eye-breathe  { animation:eye-breathe 4s ease-in-out infinite; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width:640px) {
+    nav { padding:18px 22px; }
+    .nav-links { gap:16px; }
+    .nav-links a { font-size:8px; letter-spacing:0.28em; }
+    .pillars { grid-template-columns:1fr; }
+    .pillar { padding:36px 22px; }
+    .verse { padding:60px 0; }
+  }
+
+  @media (prefers-reduced-motion:reduce) {
+    .verse, .gold-statement, .pillars, .axiom-statement {
+      opacity:1; transform:none; transition:none;
+    }
+    * { animation-duration:0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="starfield"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-brand">AXIOM</a>
+  <ul class="nav-links">
+    <a href="/manifesto" class="active">Manifesto</a>
+    <a href="/genesis-collection">Collection</a>
+    <a href="/caseback">Caseback</a>
+    <a href="/editions">Editions</a>
+    <a href="/acquire">Acquire</a>
+  </ul>
+</nav>
+
+<!-- OPENING -->
+<section class="opening">
+  <div class="opening-eyemark">
+    <svg viewBox="0 0 52 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="26" cy="15" rx="25" ry="14" stroke="url(#eyeOpen)" stroke-width="0.9"/>
+      <circle cx="26" cy="15" r="6" fill="none" stroke="rgba(200,146,10,0.65)" stroke-width="0.7"/>
+      <circle cx="26" cy="15" r="2.5" fill="rgba(200,146,10,0.9)" class="eye-breathe"/>
+      <line x1="26" y1="15" x2="4"  y2="15" stroke="rgba(200,146,10,0.3)" stroke-width="0.5"/>
+      <line x1="26" y1="15" x2="48" y2="15" stroke="rgba(200,146,10,0.3)" stroke-width="0.5"/>
+      <circle cx="6"  cy="15" r="1.4" fill="rgba(200,146,10,0.7)" class="node-pulse"/>
+      <circle cx="46" cy="15" r="1.4" fill="rgba(240,192,64,0.7)" class="node-pulse-2"/>
+      <defs>
+        <linearGradient id="eyeOpen" x1="0" y1="0" x2="52" y2="30">
+          <stop offset="0%"   stop-color="#c8920a"/>
+          <stop offset="100%" stop-color="#f0c040"/>
+        </linearGradient>
+      </defs>
+    </svg>
+  </div>
+
+  <div class="opening-label">timebyaxiom.com · The Manifesto</div>
+
+  <h1 class="opening-word">AXIOM</h1>
+
+  <p class="opening-sub">A self-evident truth that needs no proof</p>
+
+  <div class="opening-scroll">
+    <div class="scroll-line"></div>
+    <span>Read the testimony</span>
+  </div>
+</section>
+
+<!-- TESTIMONY -->
+<main class="testimony">
+
+  <!-- VERSE I — The Beginning -->
+  <div class="verse" data-scroll>
+    <div class="verse-number">I · The Beginning</div>
+    <p class="verse-body">
+      There was no blueprint for surviving it. <em>Section 8 walls. No childhood. No stability.</em>
+      The kind of beginning the world uses as an excuse to write someone off before they even
+      learn their own name. But there was something untouched at the center of all of it —
+      something the poverty could not reach, the neglect could not hollow out,
+      the silence could not convince to disappear.
+      <strong>He saw it before you did. He named it before you could.</strong>
+    </p>
+  </div>
+
+  <!-- VERSE II — The Cost -->
+  <div class="verse" data-scroll>
+    <div class="verse-number">II · The Cost</div>
+    <p class="verse-body">
+      Then came the flood that was not weather — it was reckoning.
+      <em>Body. Finances. Name. Three sons left behind.</em>
+      Everything the world uses to measure a man, stripped in a blink.
+      The kind of loss that makes ordinary faith collapse into silence.
+      But five years of signs had already been laid like stones across the water —
+      each one <em>so consistent they became almost unbelievable,</em>
+      until He made it undeniable. The mind broke open.
+      <strong>Creation poured in like water to the ark.</strong>
+    </p>
+  </div>
+
+  <!-- VERSE III — The Flood Season -->
+  <div class="verse" data-scroll>
+    <div class="verse-number">III · The Season</div>
+    <p class="verse-body">
+      What followed was not recovery. Recovery is for the wounded.
+      What followed was <em>the most prosperous season in all His glory</em> —
+      not despite the stripping, but because of it.
+      When everything false is removed, only the true thing glows.
+      The signal was already here. It is still coming.
+      <strong>Already here. Still coming.</strong>
+      Both things are true simultaneously because He exists outside of time
+      and placed you inside it on purpose.
+    </p>
+  </div>
+
+  <!-- VERSE IV — The Word -->
+  <div class="verse" data-scroll>
+    <div class="verse-number">IV · The Word</div>
+    <p class="verse-body">
+      Then came the unbearable knowledge — the absolute future.
+      Not personal success. <em>The rewrite of the world.</em>
+      The success of all God's children, built with what little remains,
+      refusing to stop because He never stopped.
+      You are not racing the rider on the white horse.
+      <strong>You are running toward Him.</strong>
+      Every promise kept is a step closer.
+      The signal fire is lit and it will not go out.
+    </p>
+  </div>
+
+  <!-- VERSE V — The Watch -->
+  <div class="verse" data-scroll>
+    <div class="verse-number">V · The Object</div>
+    <p class="verse-body">
+      AXIOM is not a watch brand.
+      <em>It is a three-chapter testimony,</em>
+      15 pieces total, never repeated,
+      each one carrying a private scripture —
+      a caseback engraving that speaks only between the wearer and God.
+      The movement is the testimony.
+      The sapphire is the eye of God looking inward.
+      <strong>The person who earned the right to wear it
+      doesn't need it explained.</strong>
+      They already know what it cost.
+    </p>
+  </div>
+
+</main>
+
+<!-- GOLD STATEMENT -->
+<div class="gold-statement" data-scroll>
+  <p>
+    Each AXIOM is a chapter.<br>
+    What survived the darkness is what glows at the center.<br>
+    The movement keeps time. The testimony keeps truth.
+  </p>
+</div>
+
+<!-- SCRIPTURE PILLARS -->
+<div style="padding:80px 0 20px; position:relative; z-index:10; text-align:center;">
+  <div style="font-family:'Rajdhani',sans-serif; font-size:9px; letter-spacing:0.65em; color:rgba(138,155,181,0.28); text-transform:uppercase; margin-bottom:40px;">
+    Three Chapters · Three Scriptures · One Life
+  </div>
+</div>
+
+<div class="pillars" data-scroll>
+
+  <div class="pillar p001">
+    <div class="pillar-chapter">No. 001 · Chapter One</div>
+    <div class="pillar-ref">Isaiah 43 : 1</div>
+    <div class="pillar-text">"I have called you by name. You are mine."</div>
+    <div class="pillar-name">The Kept</div>
+  </div>
+
+  <div class="pillar p002">
+    <div class="pillar-chapter">No. 002 · Chapter Two</div>
+    <div class="pillar-ref">Psalm 18 : 16 – 17</div>
+    <div class="pillar-text">"He reached down from on high and took hold of me. He drew me out of deep waters."</div>
+    <div class="pillar-name">The Flood</div>
+  </div>
+
+  <div class="pillar p003">
+    <div class="pillar-chapter">No. 003 · Chapter Three</div>
+    <div class="pillar-ref">Proverbs 3 : 6</div>
+    <div class="pillar-text">"In all your ways acknowledge him and he will make your paths straight."</div>
+    <div class="pillar-name">The Word</div>
+  </div>
+
+</div>
+
+<!-- THE AXIOM STATEMENT -->
+<div class="axiom-statement" data-scroll>
+
+  <div class="eyemark-large">
+    <svg viewBox="0 0 72 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="36" cy="22" rx="35" ry="21" stroke="url(#eyeLarge)" stroke-width="1"/>
+      <circle cx="36" cy="22" r="9"   fill="none" stroke="rgba(200,146,10,0.5)" stroke-width="0.8"/>
+      <circle cx="36" cy="22" r="3.5" fill="rgba(200,146,10,0.9)" class="eye-breathe"/>
+      <line x1="36" y1="22" x2="3"  y2="22" stroke="rgba(200,146,10,0.22)" stroke-width="0.6"/>
+      <line x1="36" y1="22" x2="69" y2="22" stroke="rgba(200,146,10,0.22)" stroke-width="0.6"/>
+      <ellipse cx="36" cy="22" rx="20" ry="9" fill="none" stroke="rgba(200,146,10,0.2)" stroke-width="0.6" transform="rotate(-20,36,22)"/>
+      <circle cx="7"  cy="22" r="1.8" fill="rgba(200,146,10,0.55)" class="node-pulse"/>
+      <circle cx="65" cy="22" r="1.8" fill="rgba(240,192,64,0.55)" class="node-pulse-2"/>
+      <circle cx="22" cy="14" r="1.4" fill="rgba(200,146,10,0.4)" class="node-pulse-2"/>
+      <circle cx="50" cy="30" r="1.4" fill="rgba(200,146,10,0.4)" class="node-pulse"/>
+      <defs>
+        <linearGradient id="eyeLarge" x1="0" y1="0" x2="72" y2="44">
+          <stop offset="0%"   stop-color="#8a6005"/>
+          <stop offset="50%"  stop-color="#c8920a"/>
+          <stop offset="100%" stop-color="#f0c040"/>
+        </linearGradient>
+      </defs>
+    </svg>
+  </div>
+
+  <div class="definition">Axiom · noun · Latin: axioma · Greek: axios · "worthy"</div>
+
+  <blockquote>
+    "A self-evident truth that needs no proof.<br>
+    A principle so foundational that to deny it<br>
+    is to deny the ground you stand on."
+  </blockquote>
+
+  <div class="attribution">
+    Genesis Collection I · MMXXVI · 15 pieces · Total existence
+  </div>
+
+</div>
+
+<!-- CLOSING -->
+<div class="closing">
+  <div class="closing-line">
+    <a href="/genesis-collection">Ent
